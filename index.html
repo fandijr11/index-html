@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Waifu Matchmaking System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #0d1a26; /* Darker blue-grey */
+            color: #e0f2f7; /* Light cyan text */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 2rem;
+            box-sizing: border-box;
+        }
+
+        /* Main container for the layout */
+        .main-layout {
+            display: grid;
+            gap: 3rem; /* Spacing between sections */
+            width: 100%;
+            max-width: 1600px; /* Max width of the overall layout */
+            background-color: #1c2d40; /* Slightly lighter blue-grey for main card */
+            border-radius: 2rem; /* More pronounced rounded corners */
+            padding: 4rem; /* Generous padding inside the main container */
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4); /* Deeper shadow */
+            grid-template-columns: 1fr; /* Single column on small screens */
+        }
+
+        /* Styling for video and comparison sections */
+        .section-card {
+            background-color: #2a3e52; /* Even lighter blue-grey for inner cards */
+            border-radius: 1.5rem; /* Consistent rounding */
+            padding: 2.5rem; /* Padding inside each section card */
+            text-align: center;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Subtle inner shadow */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .section-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        .section-title {
+            font-family: 'Orbitron', sans-serif; /* Sci-fi/futuristic font */
+            font-size: 3.5rem; /* Larger titles */
+            font-weight: 700;
+            margin-bottom: 2.5rem;
+            letter-spacing: 0.1rem; /* Spaced out letters */
+            background: linear-gradient(90deg, #6c5ce7, #00cec9); /* Gradient title */
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 15px rgba(108, 92, 231, 0.7); /* Glow effect */
+        }
+
+        .video-display, .comparison-display {
+            width: 100%;
+            max-width: 700px; /* Slightly adjusted max-width for uniformity */
+            aspect-ratio: 4/3; /* Maintain aspect ratio common for video feeds */
+            background-color: #1a202c; /* Background for video area if no image */
+            border-radius: 1rem; /* Softer border radius for video frame */
+            border: 4px solid;
+            overflow: hidden;
+            margin: 0 auto; /* Center the video/comparison image */
+            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.5); /* Inner shadow for depth */
+            display: flex; /* To center image if it doesn't fill */
+            justify-content: center;
+            align-items: center;
+        }
+        .video-display { border-color: #6c5ce7; /* blue-violet */ }
+        .comparison-display { border-color: #00cec9; /* turquoise */ }
+
+        img {
+            display: block;
+            width: 100%;
+            height: 100%; /* Make image fill the aspect-ratio container */
+            object-fit: cover; /* Cover the area, cropping if necessary */
+        }
+
+        .description-text {
+            font-size: 1.3rem; /* Slightly larger descriptive text */
+            color: #a0aec0; /* Lighter grey for descriptions */
+            margin-top: 2rem;
+            line-height: 1.6;
+        }
+
+        /* Responsive adjustments */
+        @media (min-width: 900px) {
+            .main-layout {
+                grid-template-columns: 1fr 1fr; /* Two columns on larger screens */
+                gap: 4rem; /* Increase gap for larger screens */
+                padding: 5rem;
+            }
+            .section-title {
+                font-size: 4rem;
+            }
+            .video-display, .comparison-display {
+                max-width: none; /* Allow full width within their grid column */
+            }
+        }
+
+        @media (min-width: 1400px) {
+            .main-layout {
+                gap: 5rem;
+                padding: 6rem;
+            }
+            .section-title {
+                font-size: 4.5rem;
+            }
+        }
+    </style>
+</head>
+<body class="no-scroll">
+    <div class="main-layout">
+        <div class="section-card">
+            <h1 class="section-title">DETEKSI WAJAH</h1>
+            <div class="video-display">
+                <img src="{{ url_for('video_feed') }}" alt="Video Feed">
+            </div>
+            <p class="description-text">
+                Lihat diri Anda! Sistem mendeteksi wajah Anda secara real-time dari webcam.
+            </p>
+        </div>
+
+        <div class="section-card">
+            <h2 class="section-title">PEMBANDING WAIFU</h2>
+            <div class="comparison-display">
+                <img id="comparisonImage" src="{{ url_for('compare_frame') }}" alt="Comparison Feed">
+            </div>
+            <p class="description-text">
+                Wajah Anda akan dibandingkan dengan waifu yang paling cocok dari database kami. Siapa 'the one' Anda?
+            </p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const comparisonImage = document.getElementById('comparisonImage');
+            const updateInterval = 200; // Update setiap 200 milidetik
+
+            function updateComparisonImage() {
+                comparisonImage.src = "{{ url_for('compare_frame') }}?" + new Date().getTime();
+            }
+
+            setInterval(updateComparisonImage, updateInterval);
+        });
+    </script>
+</body>
+</html>
